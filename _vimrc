@@ -82,88 +82,152 @@ set background=dark
 
 "##########插件管理 开始#############
 filetype off
-set rtp+=$TOOLSPATH/data/vim/vimfiles/bundle/vundle
-call vundle#rc("$TOOLSPATH/data/vim/vimfiles/bundle/")
+set nocompatible
+set rtp+=$HOME/vim/vimfiles/bundle/vundle
+call vundle#rc("$HOME/vim/vimfiles/bundle/")
 
 "插件管理核心库
 Bundle 'gmarik/vundle'
+
 "代码补全
+"Bundle 'Valloric/YouCompleteMe'
 Bundle 'Shougo/neocomplcache'
-"快速查找
-Bundle 'kien/ctrlp.vim'
-Bundle "MarcWeber/vim-addon-mw-utils"
-Bundle "tomtom/tlib_vim"
-"插件 语法/高亮
-Bundle 'JavaScript-syntax'
-Bundle 'jQuery'
-Bundle 'othree/html5.vim'
-Bundle 'groenewege/vim-less'
-"Bundle 'Markdown'
-"Bundle 'Markdown-syntax'
-"Bundle 'plasticboy/vim-markdown'
-Bundle 'StanAngeloff/php.vim'
-Bundle 'php.vim-html-enhanced'
+
 "statuslines 增强
 Bundle 'scrooloose/vim-statline'
+
 "文件管理器
 Bundle 'scrooloose/nerdtree'
 "Nerdtree 增强
 Bundle 'jistr/vim-nerdtree-tabs'
-"在()、""、甚至HTML标签之间快速跳转；
-Bundle 'matchit.zip'
-"Code check for most languages
-Bundle 'scrooloose/syntastic'
-let g:syntastic_php_checkers = ['php', 'phpcs', 'phpmd']
-let g:syntastic_php_phpcs_post_args='--standard=psr2'
-let g:syntastic_javascript_checkers = ['eslint']
-"PHP CodeSniffer
-"Bundle 'joonty/vim-phpqa'
-Bundle 'jcf/vim-latex'
-
-Bundle 'thinca/vim-quickrun'
-Bundle 'mattn/webapi-vim'
-Bundle 'tyru/open-browser.vim'
-Bundle 'superbrothers/vim-quickrun-markdown-gfm'
+"autocmd vimenter * NERDTree
 
 "python 
 Bundle 'klen/python-mode'
 "代码折叠起始的层数
 set foldlevelstart=10
-"Bundle 'hallettj/jslint.vim'
-
-"即时预览CSS颜色
-"Bundle 'skammer/vim-css-color'
-"Bundle 'ZenCoding.vim'
-"Bundle 'The-NERD-tree'
-"Bundle 'SuperTab'
-
-"语法检查
-"Bundle 'scrooloose/syntastic'
 
 "颜色管理
 Bundle 'altercation/vim-colors-solarized'
+
 "激活插件与文件类型的依赖关系
 filetype plugin indent on
-"##########插件管理 结束#############
 
+"----------插件设置开始
+"
 "自定义关联文件类型
-au BufNewFile,BufRead *.less set filetype=css
-au BufNewFile,BufRead *.phtml set filetype=php
-au BufRead,BufNewFile *.js set ft=javascript.jquery
 au BufRead,BufNewFile *.py set ft=python
 
-"--------插件设置
-"---NeoComplCache 启动并使用Tab触发
-let g:neocomplcache_enable_at_startup = 1 
+" Disable AutoComplPop.
+let g:acp_enableAtStartup = 0
+" Use neocomplcache.
+let g:neocomplcache_enable_at_startup = 1
 " Use smartcase.
 let g:neocomplcache_enable_smart_case = 1
-" Use camel case completion.
-let g:neocomplcache_enable_camel_case_completion = 1
-" Use underbar completion.
-let g:neocomplcache_enable_underbar_completion = 1
 " Set minimum syntax keyword length.
-let g:neocomplcache_min_syntax_length = 2
+let g:neocomplcache_min_syntax_length = 3
+let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
+
+" Enable heavy features.
+" Use camel case completion.
+"let g:neocomplcache_enable_camel_case_completion = 1
+" Use underbar completion.
+"let g:neocomplcache_enable_underbar_completion = 1
+
+" Define dictionary.
+let g:neocomplcache_dictionary_filetype_lists = {
+    \ 'default' : '',
+    \ 'vimshell' : $HOME.'/.vimshell_hist',
+    \ 'scheme' : $HOME.'/.gosh_completions'
+        \ }
+
+" Define keyword.
+if !exists('g:neocomplcache_keyword_patterns')
+    let g:neocomplcache_keyword_patterns = {}
+endif
+let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
+
+" Plugin key-mappings.
+inoremap <expr><C-g>     neocomplcache#undo_completion()
+inoremap <expr><C-l>     neocomplcache#complete_common_string()
+
+" Recommended key-mappings.
+" <CR>: close popup and save indent.
+inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+function! s:my_cr_function()
+  return neocomplcache#smart_close_popup() . "\<CR>"
+  " For no inserting <CR> key.
+  "return pumvisible() ? neocomplcache#close_popup() : "\<CR>"
+endfunction
+" <TAB>: completion.
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+" <C-h>, <BS>: close popup and delete backword char.
+inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
+inoremap <expr><C-y>  neocomplcache#close_popup()
+inoremap <expr><C-e>  neocomplcache#cancel_popup()
+" Close popup by <Space>.
+"inoremap <expr><Space> pumvisible() ? neocomplcache#close_popup() : "\<Space>"
+
+" For cursor moving in insert mode(Not recommended)
+"inoremap <expr><Left>  neocomplcache#close_popup() . "\<Left>"
+"inoremap <expr><Right> neocomplcache#close_popup() . "\<Right>"
+"inoremap <expr><Up>    neocomplcache#close_popup() . "\<Up>"
+"inoremap <expr><Down>  neocomplcache#close_popup() . "\<Down>"
+" Or set this.
+"let g:neocomplcache_enable_cursor_hold_i = 1
+" Or set this.
+"let g:neocomplcache_enable_insert_char_pre = 1
+
+" AutoComplPop like behavior.
+"let g:neocomplcache_enable_auto_select = 1
+
+" Shell like behavior(not recommended).
+"set completeopt+=longest
+"let g:neocomplcache_enable_auto_select = 1
+"let g:neocomplcache_disable_auto_complete = 1
+"inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
+
+" Enable omni completion.
+autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+
+" Enable heavy omni completion.
+if !exists('g:neocomplcache_force_omni_patterns')
+  let g:neocomplcache_force_omni_patterns = {}
+endif
+let g:neocomplcache_force_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+let g:neocomplcache_force_omni_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+let g:neocomplcache_force_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+
+" For perlomni.vim setting.
+" https://github.com/c9s/perlomni.vim
+let g:neocomplcache_force_omni_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+
+"A-t : 打开NERDTree
+map <silent> <C-t>   <ESC>:NERDTree<CR>
+" 以打开NERDTree时的目录为工作目录
+let NERDTreeChDirMode=1
+"关闭vim时，如果打开的文件除了NERDTree没有其他文件时，它自动关闭
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") &&b:NERDTreeType == "primary") | q | endif
+"自动开启Nerdtree
+autocmd vimenter * NERDTree
+"切换Nerdtree焦点到文件编辑
+autocmd VimEnter * wincmd p
+
+"mm : 规范行首空格<cr>去除多余字符<cr>删除空白行<cr>规范行数
+nmap mm :%s/\r//g<cr>
+
+"ff : 前后补全
+"vmap ff <Esc>`>i')?><Esc>`<i<?=$this->_('<Esc>
+vmap ff "zdi<?=$this->tag->_('<C-R>z');?><ESC>
+
 "##########插件管理 结束#############
+
+
 
 function Windows_set()
     "集中配置Windows的设置，公共设置则不在这里
@@ -257,4 +321,4 @@ else
 endif
 
 "模板相关
-autocmd BufNewFile *.py 0r $TOOLSPATH/data/vim/vimfiles/template/moban.py
+autocmd BufNewFile *.py 0r $HOME/data/vim/vimfiles/template/moban.py
